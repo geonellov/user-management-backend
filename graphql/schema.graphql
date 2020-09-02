@@ -1,0 +1,38 @@
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+type Query {
+    users: [User!]! @all
+    user(id: ID @eq): User @find(model:"App\\User")
+}
+
+type Mutation {
+    createUser(
+        firstName: String @rules(apply: ["required"])
+        lastName: String @rules(apply: ["required"])
+        email: String @rules(apply: ["required","email","unique:users,mail"])
+    ):User @create(model:"App\\User")
+    updateUser(
+        id: ID! @rules(apply: ["required"])
+        firstName: String
+        lastName: String
+        email: String @rules(apply: ["email"])
+    ):User @update(model:"App\\User")
+    deleteUser(
+        id: ID! @rules(apply: ["required"])
+    ):User @delete(model:"App\\User")
+}
+
+
+
+type User {
+    id: ID!
+    firstName: String!
+    lastName:String!
+    email: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
